@@ -11,4 +11,13 @@
       <PackageReference Include="SFML.Net" Version="3.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Assets\Fonts\CascadiaCode-License.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Assets\Fonts\CascadiaCode-Regular.ttf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
