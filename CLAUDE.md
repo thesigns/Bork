@@ -17,7 +17,7 @@ dotnet clean
 
 ## Project Overview
 
-Bork is a terminal emulator/UI application built with .NET 9 and SFML.Net for graphics rendering. It renders a grid-based terminal display using the Cascadia Code monospace font.
+Bork is an experimental text game (imagine Zork meeting Nethack meeting Doom) played in a terminal emulator/UI, built with .NET 9 and SFML.Net for rendering. It renders a grid-based terminal display using the Cascadia Code monospace font.
 
 ## Architecture
 
