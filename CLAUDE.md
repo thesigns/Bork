@@ -22,8 +22,12 @@ Bork is an experimental text game (imagine Zork meeting Nethack meeting Doom) pl
 ## Architecture
 
 - **Bork/Program.cs** - Application entry point. Initializes font and Terminal, runs the main loop.
-- **Bork/Output/Terminal.cs** - Core rendering class. Manages the SFML RenderWindow, handles events, and renders the terminal grid at 60 FPS. Supports auto-sizing: when `charSize = 0`, calculates optimal font size to fit desktop.
-- **Bork/Output/TerminalCell.cs** - Struct representing a single terminal cell with pre-allocated SFML `Text` object.
+- **Bork/Output/Terminal.cs** - Core rendering class. Manages the SFML RenderWindow, handles events, and renders the terminal grid at 60 FPS. Supports auto-sizing: when `charSize = 0`, calculates optimal font size to fit desktop. Provides text output API:
+  - `SetColor(Color)` - sets foreground color for subsequent operations
+  - `Locate(col, row)` - sets cursor position (clamped to bounds)
+  - `Clear()` - fills terminal with spaces using current color, resets cursor to (0,0)
+  - `Print(string)` - prints text at cursor with `\n` and auto-wrap support
+- **Bork/Output/TerminalCell.cs** - Struct representing a single terminal cell with pre-allocated SFML `Text` object. Provides `Set(char, Color)`, `SetCharacter(char)`, and `SetColor(Color)` methods for modifying cell content.
 - **Bork/Input/KeyboardInput.cs** - Keyboard input handling with key repeat support. Tracks state of all keys via `KeyPulse` (true on press + repeats), `KeyHeld` (true while held), and `KeyLastPressTime`. Uses 500ms initial delay and 100ms repeat interval.
 
 ## Key Dependencies
