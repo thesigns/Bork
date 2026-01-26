@@ -15,6 +15,10 @@ public class Terminal
     private readonly float _cellHeight;
     private readonly Font _font;
 
+    private int _cursorCol;
+    private int _cursorRow;
+    private Color _currentColor;
+
     public RenderWindow Window => _window;
     public bool IsOpen => _window.IsOpen;
 
@@ -36,6 +40,10 @@ public class Terminal
 
         _cells = new TerminalCell[cols, rows];
         InitializeCells();
+
+        _cursorCol = 0;
+        _cursorRow = 0;
+        _currentColor = Color.White;
     }
 
     private static uint CalculateOptimalCharSize(Font font, int cols, int rows)
@@ -90,5 +98,58 @@ public class Terminal
         }
 
         _window.Display();
+    }
+
+    public void SetColor(Color color)
+    {
+        _currentColor = color;
+    }
+
+    public void Locate(int col, int row)
+    {
+        _cursorCol = Math.Clamp(col, 0, _cols - 1);
+        _cursorRow = Math.Clamp(row, 0, _rows - 1);
+    }
+
+    public void Clear()
+    {
+        for (int y = 0; y < _rows; y++)
+        {
+            for (int x = 0; x < _cols; x++)
+            {
+                _cells[x, y].Set(' ', _currentColor);
+            }
+        }
+        _cursorCol = 0;
+        _cursorRow = 0;
+    }
+
+    public void Print(string text)
+    {
+        foreach (char c in text)
+        {
+            if (c == '\n')
+            {
+                _cursorCol = 0;
+                _cursorRow++;
+                if (_cursorRow >= _rows)
+                    _cursorRow = _rows - 1;
+            }
+            else
+            {
+                if (_cursorRow < _rows && _cursorCol < _cols)
+                {
+                    _cells[_cursorCol, _cursorRow].Set(c, _currentColor);
+                }
+                _cursorCol++;
+                if (_cursorCol >= _cols)
+                {
+                    _cursorCol = 0;
+                    _cursorRow++;
+                    if (_cursorRow >= _rows)
+                        _cursorRow = _rows - 1;
+                }
+            }
+        }
     }
 }
