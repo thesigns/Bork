@@ -27,6 +27,8 @@ public class Terminal
 
     public RenderWindow Window => _window;
     public bool IsOpen => _window.IsOpen;
+    public int Cols => _cols;
+    public int Rows => _rows;
 
     public Terminal(int cols, int rows, Font font, uint charSize, bool fullscreen, string title)
     {
@@ -118,7 +120,7 @@ public class Terminal
                     _cursorCol * _cellWidth,
                     (_cursorRow + 1) * _cellHeight - cursorHeight);
                 _cursorRect.Size = new Vector2f(_cellWidth, cursorHeight);
-                _cursorRect.FillColor = _cells[_cursorCol, _cursorRow].Text.FillColor;
+                _cursorRect.FillColor = Color.White;
                 _window.Draw(_cursorRect);
             }
         }
