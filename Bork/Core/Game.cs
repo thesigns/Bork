@@ -18,6 +18,17 @@ public class Game
         _input = input;
         _prompt = new Prompt();
         _prompt.OnSubmit += OnPromptSubmit;
+
+        // Test hints
+        _prompt.AddHint("look");
+        _prompt.AddHint("look around");
+        _prompt.AddHint("go north");
+        _prompt.AddHint("go south");
+        _prompt.AddHint("go east");
+        _prompt.AddHint("go west");
+        _prompt.AddHint("take");
+        _prompt.AddHint("inventory");
+        _prompt.AddHint("help");
     }
 
     private void OnPromptSubmit(string command)

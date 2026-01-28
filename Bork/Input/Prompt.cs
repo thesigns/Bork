@@ -16,8 +16,26 @@ public class Prompt
     private int _historyIndex = -1;
     private string _savedText = "";
 
+    private readonly SortedSet<string> _hints = new(StringComparer.OrdinalIgnoreCase);
+
     public string Text => _text;
     public event Action<string>? OnSubmit;
+
+    public void AddHint(string hint) => _hints.Add(hint);
+    public void ClearHints() => _hints.Clear();
+
+    private string? GetMatchingHint()
+    {
+        if (string.IsNullOrEmpty(_text))
+            return null;
+
+        foreach (var hint in _hints)
+        {
+            if (hint.StartsWith(_text, StringComparison.OrdinalIgnoreCase) && hint.Length > _text.Length)
+                return hint;
+        }
+        return null;
+    }
 
     public void Update(KeyboardInput input, int maxLength)
     {
@@ -85,6 +103,7 @@ public class Prompt
         {
             if (_text.Length > 0)
             {
+                ClearHints();
                 _history.Add(_text);
                 OnSubmit?.Invoke(_text);
             }
@@ -93,6 +112,17 @@ public class Prompt
             _historyIndex = -1;
             _savedText = "";
             return;
+        }
+
+        // Tab - accept hint
+        if (input.KeyPulse.GetValueOrDefault(Keyboard.Key.Tab))
+        {
+            var hint = GetMatchingHint();
+            if (hint != null)
+            {
+                _text = hint;
+                _cursorPosition = _text.Length;
+            }
         }
 
         // Character input (only if not at max length)
@@ -133,6 +163,15 @@ public class Prompt
         // Draw text
         terminal.SetColor(Color.White);
         terminal.Print(_text);
+
+        // Draw hint completion (if any)
+        var hint = GetMatchingHint();
+        if (hint != null)
+        {
+            string completion = hint.Substring(_text.Length);
+            terminal.SetColor(new Color(100, 100, 100));
+            terminal.Print(completion);
+        }
 
         // Position cursor
         terminal.Locate(Prefix.Length + _cursorPosition, row);
