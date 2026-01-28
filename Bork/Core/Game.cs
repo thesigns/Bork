@@ -16,9 +16,8 @@ public class Game
         _output = output;
         _input = input;
         
-        _output.SetColor(Color.Green);
         _output.Clear();
-        _output.SetColor(Color.White);
+        _output.SetColor(Color.Green);
         _output.Locate(10, 5);
         _output.Print("Hello Bork!\nLinia 2");
         

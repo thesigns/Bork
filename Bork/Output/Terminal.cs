@@ -14,10 +14,16 @@ public class Terminal
     private readonly float _cellWidth;
     private readonly float _cellHeight;
     private readonly Font _font;
+    private readonly Clock _cursorClock;
+    private readonly RectangleShape _cursorRect;
+    private const float CursorBlinkRate = 0.5f;
 
     private int _cursorCol;
     private int _cursorRow;
     private Color _currentColor;
+
+    public bool CursorVisible { get; set; } = true;
+    public float CursorSize { get; set; } = 0.2f;
 
     public RenderWindow Window => _window;
     public bool IsOpen => _window.IsOpen;
@@ -43,7 +49,10 @@ public class Terminal
 
         _cursorCol = 0;
         _cursorRow = 0;
-        _currentColor = Color.White;
+        _currentColor = new Color(160, 160, 160);
+
+        _cursorClock = new Clock();
+        _cursorRect = new RectangleShape();
     }
 
     private static uint CalculateOptimalCharSize(Font font, int cols, int rows)
@@ -94,6 +103,23 @@ public class Terminal
             for (int x = 0; x < _cols; x++)
             {
                 _window.Draw(_cells[x, y].Text);
+            }
+        }
+
+        if (CursorVisible && CursorSize > 0)
+        {
+            float elapsed = _cursorClock.ElapsedTime.AsSeconds();
+            bool cursorOn = (elapsed % 1.0f) < CursorBlinkRate;
+
+            if (cursorOn)
+            {
+                float cursorHeight = CursorSize * _cellHeight;
+                _cursorRect.Position = new Vector2f(
+                    _cursorCol * _cellWidth,
+                    (_cursorRow + 1) * _cellHeight - cursorHeight);
+                _cursorRect.Size = new Vector2f(_cellWidth, cursorHeight);
+                _cursorRect.FillColor = _cells[_cursorCol, _cursorRow].Text.FillColor;
+                _window.Draw(_cursorRect);
             }
         }
 
